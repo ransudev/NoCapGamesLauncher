@@ -1,6 +1,8 @@
-
 package com.mycompany.nocapgameslauncher.gui.components;
 
+import com.mycompany.nocapgameslauncher.gui.utilities.LightModeToggle;
+import com.mycompany.nocapgameslauncher.gui.utilities.ThemeManager;
+import com.mycompany.nocapgameslauncher.gui.utilities.ThemePanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -13,10 +15,8 @@ public class GameCardCreator {
     private static final boolean DEBUG = true;
 
     public static JPanel createGameCard(String title, String description, ImageIcon icon) {
-        JPanel card = new JPanel(new BorderLayout(10, 10));
+        ThemePanel card = new ThemePanel(new BorderLayout(10, 10));
         card.setPreferredSize(new Dimension(150, 225)); // Smaller fixed size for the card (2x3 aspect ratio)
-        card.setBackground(new Color(0x1e1e1e));
-        card.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
 
         Image scaled = icon.getImage().getScaledInstance(130, 100, Image.SCALE_SMOOTH);
         JLabel imageLabel = new JLabel(new ImageIcon(scaled));
@@ -24,9 +24,29 @@ public class GameCardCreator {
         card.add(imageLabel, BorderLayout.CENTER);
 
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        titleLabel.setForeground(LightModeToggle.getTextColor()); // Set initial color
         card.add(titleLabel, BorderLayout.NORTH);
+
+        ThemeManager.addComponent(new ThemeManager.Themeable() {
+            @Override
+            public void updateTheme() {
+                card.setBackground(LightModeToggle.getBackgroundColor());
+                card.setBorder(BorderFactory.createLineBorder(LightModeToggle.getBackgroundColor().brighter()));
+                titleLabel.setForeground(LightModeToggle.getTextColor());
+            }
+        });
+        card.updateTheme(); // Call updateTheme to set initial colors
+        
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                card.setBackground(LightModeToggle.getAccentColor());
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                card.setBackground(LightModeToggle.getComponentColor());
+            }
+        });
 
         return card;
     }
@@ -52,9 +72,9 @@ public class GameCardCreator {
         }
         BufferedImage img = new BufferedImage(320, 180, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
-        g.setColor(new Color(0x2a2a2a));
+        g.setColor(LightModeToggle.getBackgroundColor());
         g.fillRect(0,0,320,180);
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(LightModeToggle.getTextColor());
         g.drawString("Image missing: " + resourcePath, 10, 20);
         g.dispose();
         return new ImageIcon(img);
