@@ -1,7 +1,10 @@
-
 package com.mycompany.nocapgameslauncher.gui.components;
 
 import com.mycompany.nocapgameslauncher.gui.mainFrame;
+import com.mycompany.nocapgameslauncher.gui.utilities.LightModeToggle;
+import com.mycompany.nocapgameslauncher.gui.utilities.ThemeButton;
+import com.mycompany.nocapgameslauncher.gui.utilities.ThemeManager;
+import com.mycompany.nocapgameslauncher.gui.utilities.ThemePanel;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -14,19 +17,25 @@ public class HeaderCreator {
     private static final boolean DEBUG = true;
 
     public static JPanel createHeader(mainFrame frame, JPanel sidebarPanel) {
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(0x202020));
+        ThemePanel headerPanel = new ThemePanel(new BorderLayout()) {
+            @Override
+            public void updateTheme() {
+                super.updateTheme();
+                setBackground(LightModeToggle.getAccentColor());
+            }
+        };
         headerPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        JPanel headerLinks = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
-        headerLinks.setBackground(new Color(0x202020));
+        ThemePanel headerLinks = new ThemePanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
+        headerLinks.setOpaque(false);
         
-        JButton toggleButton = new JButton("=");
+        ThemeButton toggleButton = new ThemeButton("=");
         toggleButton.setFont(new Font("Arial", Font.BOLD, 24));
-        toggleButton.setForeground(Color.WHITE);
-        toggleButton.setBackground(new Color(0x202020));
         toggleButton.setBorder(new EmptyBorder(0, 0, 0, 15));
         toggleButton.setFocusPainted(false);
+        toggleButton.setContentAreaFilled(false);
+        toggleButton.setForeground(Color.WHITE);
+        toggleButton.setManageForeground(false); // Disable theme management for foreground
         toggleButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         toggleButton.addActionListener(e -> {
             sidebarPanel.setVisible(!sidebarPanel.isVisible());
@@ -35,15 +44,21 @@ public class HeaderCreator {
         });
         headerLinks.add(toggleButton);
 
-        JButton homeButton = createHeaderLink("Home");
+        ThemeButton homeButton = createHeaderLink("Home");
+        homeButton.setForeground(Color.WHITE);
+        homeButton.setManageForeground(false); // Disable theme management for foreground
         homeButton.addActionListener(e -> {
             frame.showCard("LIBRARY");
         });
-        JButton storeLink = createHeaderLink("Store");
+        ThemeButton storeLink = createHeaderLink("Store");
+        storeLink.setForeground(Color.WHITE);
+        storeLink.setManageForeground(false); // Disable theme management for foreground
         storeLink.addActionListener(e -> {
             frame.showCard("STORE");
         });
-        JButton friendsLink = createHeaderLink("Friends");
+        ThemeButton friendsLink = createHeaderLink("Friends");
+        friendsLink.setForeground(Color.WHITE);
+        friendsLink.setManageForeground(false); // Disable theme management for foreground
         friendsLink.addActionListener(e -> {
             frame.showCard("FRIENDS");
         });
@@ -52,46 +67,58 @@ public class HeaderCreator {
         headerLinks.add(friendsLink);
         headerPanel.add(headerLinks, BorderLayout.WEST);
 
-        JTextField searchBar = new JTextField("Search games...");
-        searchBar.setForeground(new Color(0x888888));
-        searchBar.setBackground(new Color(0x333333));
-        searchBar.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(0x444444)),
-            new EmptyBorder(8, 15, 8, 15)
-        ));
+        JTextField searchBar = new JTextField("Search games...") {
+            @Override
+            public void updateUI() {
+                super.updateUI();
+                setForeground(LightModeToggle.getTextColor());
+                setBackground(LightModeToggle.getComponentColor());
+                setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(LightModeToggle.getComponentColor().brighter()),
+                    new EmptyBorder(8, 15, 8, 15)
+                ));
+            }
+        };
+        ThemeManager.addComponent(searchBar::updateUI);
         searchBar.setPreferredSize(new Dimension(400, 30));
         searchBar.setToolTipText("Search games...");
         searchBar.putClientProperty("JComponent.roundedCorners", true);
-        JPanel searchPanel = new JPanel(new GridBagLayout());
-        searchPanel.setBackground(new Color(0x202020));
+        ThemePanel searchPanel = new ThemePanel(new GridBagLayout());
+        searchPanel.setOpaque(false);
         searchPanel.add(searchBar);
         headerPanel.add(searchPanel, BorderLayout.CENTER);
 
-        JPanel profilePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        profilePanel.setBackground(new Color(0x202020));
+        ThemePanel profilePanel = new ThemePanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        profilePanel.setOpaque(false);
         
-        JButton profileIcon = new JButton("👤"); // Changed icon to profile icon
-        profileIcon.setFont(new Font("Arial", Font.PLAIN, 24));
+        ThemeButton themeToggleButton = createHeaderLink("Toggle Theme");
+        themeToggleButton.setForeground(Color.WHITE);
+        themeToggleButton.setManageForeground(false); // Disable theme management for foreground
+        themeToggleButton.addActionListener(e -> {
+            LightModeToggle.toggle();
+            ThemeManager.updateTheme();
+        });
+        profilePanel.add(themeToggleButton);
+        
+        ThemeButton profileIcon = createHeaderLink("👤");
         profileIcon.setForeground(Color.WHITE);
-        profileIcon.setBackground(new Color(0x202020));
-        profileIcon.setBorderPainted(false);
-        profileIcon.setFocusPainted(false);
-        profileIcon.setContentAreaFilled(false);
+        profileIcon.setManageForeground(false); // Disable theme management for foreground
+        profileIcon.setFont(new Font("Arial", Font.PLAIN, 24));
         profileIcon.addActionListener(e -> {
             JPopupMenu profileMenu = new JPopupMenu();
-            profileMenu.setBackground(new Color(0x333333));
+            profileMenu.setBackground(LightModeToggle.getComponentColor());
 
             JMenuItem changeAccountItem = new JMenuItem("Change Account");
-            changeAccountItem.setForeground(Color.WHITE);
-            changeAccountItem.setBackground(new Color(0x333333));
+            changeAccountItem.setForeground(LightModeToggle.getTextColor());
+            changeAccountItem.setBackground(LightModeToggle.getComponentColor());
             changeAccountItem.addActionListener(actionEvent -> {
                 JOptionPane.showMessageDialog(frame, "Change Account clicked!");
             });
             profileMenu.add(changeAccountItem);
 
             JMenuItem loginSignoutItem = new JMenuItem("Login/Signout");
-            loginSignoutItem.setForeground(Color.WHITE);
-            loginSignoutItem.setBackground(new Color(0x333333));
+            loginSignoutItem.setForeground(LightModeToggle.getTextColor());
+            loginSignoutItem.setBackground(LightModeToggle.getComponentColor());
             loginSignoutItem.addActionListener(actionEvent -> {
                 JOptionPane.showMessageDialog(frame, "Login/Signout clicked!");
             });
@@ -105,10 +132,8 @@ public class HeaderCreator {
         return headerPanel;
     }
     
-    private static JButton createHeaderLink(String text) {
-        JButton link = new JButton(text);
-        link.setForeground(Color.WHITE);
-        link.setBackground(new Color(0x202020));
+    private static ThemeButton createHeaderLink(String text) {
+        ThemeButton link = new ThemeButton(text);
         link.setBorderPainted(false);
         link.setFocusPainted(false);
         link.setContentAreaFilled(false);
@@ -136,9 +161,9 @@ public class HeaderCreator {
         }
         BufferedImage img = new BufferedImage(320, 180, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
-        g.setColor(new Color(0x2a2a2a));
+        g.setColor(LightModeToggle.getBackgroundColor());
         g.fillRect(0,0,320,180);
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(LightModeToggle.getTextColor());
         g.drawString("Image missing: " + resourcePath, 10, 20);
         g.dispose();
         return new ImageIcon(img);
