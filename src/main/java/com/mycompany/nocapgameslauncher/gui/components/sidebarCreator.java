@@ -25,6 +25,7 @@ public class sidebarCreator {
         panel.setPreferredSize(new Dimension(width, Integer.MAX_VALUE));
         panel.setMaximumSize(new Dimension(width, Integer.MAX_VALUE));
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 1));
+        
 
         addItem(panel, "Owned Games", "📦", onItemClick);
         
@@ -59,30 +60,25 @@ public class sidebarCreator {
     
     private static void addItem(JPanel panel, String text, String icon, Consumer<String> onItemClick) {
         ThemeButton button = new ThemeButton(text + " " + icon);
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
-        button.setPreferredSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.setMinimumSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.setHorizontalAlignment(JButton.LEFT);
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        button.setContentAreaFilled(false);
-        button.setFocusable(false);
-        button.setFocusPainted(false);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
+        FontManager.fixIcon(button, Integer.MAX_VALUE, 40);
+        button.setHorizontalAlignment(SwingConstants.LEFT);
         
         button.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(LightModeToggle.getComponentColor());
                 button.setOpaque(true);
             }
             
+            @Override
             public void mouseExited(MouseEvent e) {
                 button.setBackground(LightModeToggle.getComponentColor());
                 button.setOpaque(false);
             }
         });
         
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             onItemClick.accept(text.toUpperCase());
         });
         
@@ -90,34 +86,22 @@ public class sidebarCreator {
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
-    private static void addGameItem(JPanel panel, String text, mainFrame frame, Consumer<String> onItemClick) {
-        ThemeButton button = new ThemeButton(text, false, true, LightModeToggle.getTextColor()); // Set initial color to text color, manage foreground
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
-        button.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
-        button.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        button.setHorizontalAlignment(JButton.LEFT);
-        button.setBorder(BorderFactory.createEmptyBorder(2, 25, 2, 5)); // Further indent
-        button.setContentAreaFilled(false);
-        button.setFocusable(false);
-        button.setFocusPainted(false);
-        FontManager.setFont(button, Font.PLAIN, 12);
+    private static void addGameItem(JPanel panel, String text, mainFrame frame, @SuppressWarnings("unused") Consumer<String> onItemClick) {
+        ThemeButton button = new ThemeButton(text, false, true, LightModeToggle.getTextColor());
+        FontManager.fixIcon(button, Integer.MAX_VALUE, 40);
+        button.setHorizontalAlignment(SwingConstants.LEFT); // Size messed up lol, I'll figure it out in prefinals
         
         button.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
-                button.setForeground(LightModeToggle.getAccentColor()); // Use accent color on hover
-            }
-            
+                button.setForeground(LightModeToggle.getAccentColor());
+            } @Override
             public void mouseExited(MouseEvent e) {
-                button.setForeground(LightModeToggle.getTextColor()); // Match text color
+                button.setForeground(LightModeToggle.getTextColor());
             }
         });
         
-        button.addActionListener(e -> {
-            frame.showGameDetail(text);
-            // In a more advanced setup, you might pass the game name to highlight it
-        });
-        
+        button.addActionListener(_ -> frame.showGameDetail(text));
         panel.add(button);
     }
 

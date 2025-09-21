@@ -12,11 +12,14 @@ public class LightModeToggle {
     public static final Color DARK_SIDEBAR = new Color(20, 20, 20); 
     public static final Color DARK_TEXT = new Color(235, 235, 235); 
     public static final Color ACCENT_COLOR = new Color(209, 54, 57); 
+    public static final String DARK_ICON = "🌙";
+    
     // Light Mode Colors
     public static final Color LIGHT_BACKGROUND = new Color(255, 255, 255); 
     public static final Color LIGHT_COMPONENT = new Color(240, 240, 240); 
     public static final Color LIGHT_TEXT = new Color(0, 0, 0); 
-
+    public static final String LIGHT_ICON = "☀";
+    
     //Outside Colors
     public static final Color GREEN = new Color(67, 160, 71);
 

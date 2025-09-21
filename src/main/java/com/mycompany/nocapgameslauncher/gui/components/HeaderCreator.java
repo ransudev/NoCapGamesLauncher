@@ -82,10 +82,12 @@ public class HeaderCreator {
         ThemePanel profilePanel = new ThemePanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         profilePanel.setOpaque(false);
         
-        ThemeButton themeToggleButton = createHeaderLink("Toggle Theme");
+        ThemeButton themeToggleButton = createHeaderLink(LightModeToggle.isLightMode() ? LightModeToggle.LIGHT_ICON : LightModeToggle.DARK_ICON);
         themeToggleButton.setForeground(Color.WHITE);
         themeToggleButton.setManageForeground(false); // Disable theme management for foreground
+        FontManager.fixIcon(themeToggleButton, 32, 32);
         themeToggleButton.addActionListener(_ -> {
+            themeToggleButton.setText(LightModeToggle.isLightMode() ? LightModeToggle.DARK_ICON : LightModeToggle.LIGHT_ICON);
             LightModeToggle.toggle();
             ThemeManager.updateTheme();
         });
@@ -94,7 +96,7 @@ public class HeaderCreator {
         ThemeButton profileIcon = createHeaderLink("👤");
         profileIcon.setForeground(Color.WHITE);
         profileIcon.setManageForeground(false); // Disable theme management for foreground
-        FontManager.setFont(profileIcon, Font.BOLD, 36);
+        FontManager.fixIcon(profileIcon, 32, 32);
         profileIcon.addActionListener(_ -> {
             JPopupMenu profileMenu = new JPopupMenu();
             profileMenu.setBackground(LightModeToggle.getComponentColor());
@@ -128,6 +130,7 @@ public class HeaderCreator {
         link.setBorderPainted(false);
         link.setFocusPainted(false);
         link.setContentAreaFilled(false);
+        link.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 16));
         return link;
     }
 }

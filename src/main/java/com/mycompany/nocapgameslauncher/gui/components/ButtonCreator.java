@@ -2,7 +2,6 @@ package com.mycompany.nocapgameslauncher.gui.components;
 
 import com.mycompany.nocapgameslauncher.gui.mainFrame;
 import com.mycompany.nocapgameslauncher.gui.utilities.ThemeButton;
-import javax.swing.*;
 import java.awt.*;
 
 public class ButtonCreator extends ThemeButton {
@@ -15,8 +14,6 @@ public class ButtonCreator extends ThemeButton {
         setPreferredSize(new Dimension(200, 30));
         setFocusable(false);
         
-        addActionListener(e -> {
-            frame.showCard(cardName);
-        });
+        addActionListener(_ -> frame.showCard(cardName));
     }
 }

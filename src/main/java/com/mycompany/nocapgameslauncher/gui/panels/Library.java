@@ -15,11 +15,12 @@ import java.util.*;
 import com.mycompany.nocapgameslauncher.gui.utilities.*;
 
 public class Library extends ThemePanel {
-    private mainFrame frame;
+    @SuppressWarnings("unused") private final mainFrame frame; // Placeholder suppression for now
     private ThemePanel cardsPanel;
     private ArrayList<JPanel> gameCardsList;
     private JLabel titleLabel;
 
+    @SuppressWarnings("OverridableMethodCallInConstructor") // Placeholder suppression for now
     public Library(mainFrame frame) {
         super(new BorderLayout());
         this.frame = frame;
@@ -31,8 +32,7 @@ public class Library extends ThemePanel {
         try {
             setBorder(new EmptyBorder(20, 20, 20, 20));
             titleLabel = new JLabel("My Library");
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
-            titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
+            FontManager.setFont(titleLabel, Font.BOLD, 40);
             add(titleLabel, BorderLayout.NORTH);
 
             cardsPanel = new ThemePanel(new GridLayout(0, 4, 20, 20));
@@ -52,8 +52,7 @@ public class Library extends ThemePanel {
                 for (int i = 0; i < gameTitles.size(); i++) {
                     String title = gameTitles.get(i);
                     String description = (i < gameDescriptions.size()) ? gameDescriptions.get(i) : "No description available.";
-                    // For now, use a generic icon. In a real app, you'd map title to icon.
-                    ImageIcon gameIcon = GameCardCreator.loadIcon("/Resources/default_game_icon.jpg"); 
+                    ImageIcon gameIcon = resourceLoader.loadIcon("ImageResources/default_game_icon.jpg"); 
                     gameCardsList.add(GameCardCreator.createGameCard(title, description, gameIcon));
                 }
             }
@@ -66,10 +65,9 @@ public class Library extends ThemePanel {
             cardsWrapper.add(cardsPanel);
 
             add(cardsWrapper, BorderLayout.CENTER);
-        } catch (Throwable t) {
-            t.printStackTrace();
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                "Failed to build content: " + t.getClass().getSimpleName() + " - " + t.getMessage(),
+                "Failed to build content: " + e.getClass().getSimpleName() + " - " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
         }

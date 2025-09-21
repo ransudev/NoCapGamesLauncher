@@ -8,7 +8,6 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
-import com.mycompany.nocapgameslauncher.gui.components.*;
 import com.mycompany.nocapgameslauncher.gui.panels.*;
 import com.mycompany.nocapgameslauncher.gui.utilities.*;
 
@@ -17,14 +16,14 @@ public class resourceLoader {
     
     public static ImageIcon loadIcon(String resourcePath) {
         if (DEBUG) System.out.println("loadIcon called with: " + resourcePath);
-        URL url = HeaderCreator.class.getResource(resourcePath);
+        URL url = resourceLoader.class.getResource(resourcePath);
         if (url != null) {
             if (DEBUG) System.out.println(" → Loaded from classpath: " + url);
             return new ImageIcon(url);
         }
         String rp = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
-        File f1 = new File("src/main/resources/" + rp);
-        File f2 = new File("src/" + rp);
+        File f1 = new File("src//main//resources//" + rp);
+        File f2 = new File("src//" + rp);
         File pick = f1.exists() ? f1 : (f2.exists() ? f2 : null);
         if (pick != null) {
             if (DEBUG) System.out.println(" → Loaded from filesystem: " + pick.getAbsolutePath());

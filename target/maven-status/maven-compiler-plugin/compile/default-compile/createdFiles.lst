@@ -12,7 +12,6 @@ com\mycompany\nocapgameslauncher\NoCapGamesLauncher.class
 com\mycompany\nocapgameslauncher\gui\components\sidebarCreator$1.class
 com\mycompany\nocapgameslauncher\gui\utilities\LightModeToggle.class
 com\mycompany\nocapgameslauncher\gui\components\HeaderCreator$1.class
-com\mycompany\nocapgameslauncher\gui\components\GameCardCreator$2.class
 com\mycompany\nocapgameslauncher\gui\panels\Friends$1.class
 com\mycompany\nocapgameslauncher\gui\panels\GameDetail.class
 com\mycompany\nocapgameslauncher\gui\utilities\ThemeManager$Themeable.class

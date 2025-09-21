@@ -11,12 +11,12 @@ import javax.swing.border.EmptyBorder;
 
 public class GameDetail extends ThemePanel {
 
-    private mainFrame frame;
-    private JLabel gameTitleLabel;
-    private JTextArea gameDescriptionArea;
-    private ThemeButton playButton;
+    private final mainFrame frame;
+    private final JLabel gameTitleLabel;
+    private final JTextArea gameDescriptionArea;
+    private final ThemeButton playButton;
 
-    private Map<String, String> gameDescriptions;
+    private final Map<String, String> gameDescriptions;
 
     public GameDetail(mainFrame frame) {
         super(new BorderLayout(20, 20));
