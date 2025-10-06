@@ -2,43 +2,40 @@ package com.mycompany.nocapgameslauncher.gui.panels;
 
 import com.mycompany.nocapgameslauncher.gui.mainFrame;
 import com.mycompany.nocapgameslauncher.gui.components.GameCardCreator;
+import com.mycompany.nocapgameslauncher.gui.utilities.FontManager;
+import com.mycompany.nocapgameslauncher.gui.utilities.LightModeToggle;
+import com.mycompany.nocapgameslauncher.gui.utilities.ThemePanel;
+import com.mycompany.nocapgameslauncher.gui.resourceManager.resourceLoader;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.net.URL;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import java.util.*;
+import java.io.*;
+import javax.swing.border.EmptyBorder;
 
-public class Store extends JPanel {
-    private static final boolean DEBUG = true;
-
-    private mainFrame frame;
-    private JPanel cardsPanel;
+public class Store extends ThemePanel {
+    @SuppressWarnings("unused") private final mainFrame frame;
+    private ThemePanel cardsPanel;
     private ArrayList<JPanel> gameCardsList;
+    private JLabel titleLabel;
 
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public Store(mainFrame frame) {
+        super(new BorderLayout());
         this.frame = frame;
-        setLayout(new BorderLayout());
-        setBackground(new Color(0x121212));
         createContentView();
+        updateTheme();
     }
 
     private void createContentView() {
         try {
             setBorder(new EmptyBorder(20, 20, 20, 20));
 
-            JLabel titleLabel = new JLabel("Game Store");
+            titleLabel = new JLabel("Game Store");
             titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
-            titleLabel.setForeground(new Color(0xef4444));
             titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             add(titleLabel, BorderLayout.NORTH);
 
-            cardsPanel = new JPanel(new GridLayout(0, 4, 20, 20));
-            cardsPanel.setBackground(new Color(0x121212));
+            cardsPanel = new ThemePanel(new GridLayout(0, 4, 20, 20));
             cardsPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
             gameCardsList = new ArrayList<>();
@@ -48,27 +45,25 @@ public class Store extends JPanel {
             if (gameTitles.isEmpty()) {
                 JLabel noGamesLabel = new JLabel("No games available.");
                 noGamesLabel.setForeground(Color.WHITE);
-                noGamesLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+                FontManager.setFont(noGamesLabel, Font.PLAIN, 20);
                 cardsPanel.add(noGamesLabel);
             } else {
-                for (String title : gameTitles) {
-                    // For now, use a generic icon. In a real app, you'd map title to icon.
-                    ImageIcon gameIcon = GameCardCreator.loadIcon("/Resources/default_game_icon.jpg"); 
-                    gameCardsList.add(GameCardCreator.createGameCard(title, "Description for " + title, gameIcon));
+                for (int i = 0; i < gameTitles.size(); i++) {
+                    String title = gameTitles.get(i);
+                    ImageIcon gameIcon = resourceLoader.loadIcon("ImageResources/default_game_icon.jpg"); 
+                    gameCardsList.add(GameCardCreator.createGameCard(title, "", gameIcon));
                 }
-            }
+            }   
 
             for (JPanel card : gameCardsList) {
                 cardsPanel.add(card);
             }
 
-            JPanel cardsWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            cardsWrapper.setBackground(new Color(0x121212));
+            ThemePanel cardsWrapper = new ThemePanel(new FlowLayout(FlowLayout.LEFT));
             cardsWrapper.add(cardsPanel);
 
             add(cardsWrapper, BorderLayout.CENTER);
         } catch (Throwable t) {
-            t.printStackTrace();
             JOptionPane.showMessageDialog(this,
                 "Failed to build content: " + t.getClass().getSimpleName() + " - " + t.getMessage(),
                 "Error",
@@ -78,7 +73,7 @@ public class Store extends JPanel {
 
     private ArrayList<String> loadGamesFromFile(String filename) {
         ArrayList<String> games = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filename)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Store.class.getResourceAsStream(filename)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.trim().isEmpty()) {
@@ -89,5 +84,16 @@ public class Store extends JPanel {
             System.err.println("Error reading game list from " + filename + ": " + e.getMessage());
         }
         return games;
+    }
+
+    @Override
+    public void updateTheme() {
+        super.updateTheme();
+        if (titleLabel != null) {
+            titleLabel.setForeground(LightModeToggle.getTextColor());
+        }
+        if (cardsPanel != null) {
+            cardsPanel.updateTheme();
+        }
     }
 }
