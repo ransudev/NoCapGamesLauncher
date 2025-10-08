@@ -6,6 +6,7 @@ import com.mycompany.nocapgameslauncher.gui.utilities.FontManager;
 import com.mycompany.nocapgameslauncher.gui.utilities.LightModeToggle;
 import com.mycompany.nocapgameslauncher.gui.utilities.ThemePanel;
 import com.mycompany.nocapgameslauncher.gui.resourceManager.resourceLoader;
+import static com.mycompany.nocapgameslauncher.gui.components.GameCardCreator.CARD_WIDTH;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -19,7 +20,6 @@ public class Store extends ThemePanel {
     private ThemePanel cardsPanel;
     private ArrayList<JPanel> gameCardsList;
     private JLabel titleLabel;
-    private static final int MIN_CARD_WIDTH = 200;
     private static final int CARD_GAP = 20;
 
     @SuppressWarnings("OverridableMethodCallInConstructor")
@@ -55,7 +55,7 @@ public class Store extends ThemePanel {
                 for (int i = 0; i < gameTitles.size(); i++) {
                     String title = gameTitles.get(i);
                     ImageIcon gameIcon = resourceLoader.loadIcon("ImageResources/default_game_icon.jpg"); 
-                    gameCardsList.add(GameCardCreator.createGameCard(title, "", gameIcon));
+                    gameCardsList.add(GameCardCreator.createGameCard(title, "", gameIcon, () -> frame.showGameDetail(title)));
                 }
             }   
 
@@ -96,7 +96,7 @@ public class Store extends ThemePanel {
         }
         
         // Calculate optimal number of columns based on available width
-        int columns = Math.max(1, availableWidth / (MIN_CARD_WIDTH + CARD_GAP));
+        int columns = Math.max(1, availableWidth / (CARD_WIDTH + CARD_GAP));
         
         // Update the grid layout if columns changed
         GridLayout layout = (GridLayout) cardsPanel.getLayout();
