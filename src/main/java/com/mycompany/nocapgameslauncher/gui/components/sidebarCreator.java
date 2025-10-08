@@ -1,5 +1,8 @@
 package com.mycompany.nocapgameslauncher.gui.components;
 
+import com.mycompany.nocapgameslauncher.gui.mainFrame;
+import com.mycompany.nocapgameslauncher.gui.utilities.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.function.*;
@@ -10,35 +13,43 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 public class sidebarCreator {
-    private static Color DEFAULT_BG = new Color(0x202020);
-    private static Color HIGHLIGHTED = new Color(0x333333);
             
-    public static JPanel createNavigationSidebar(int width, Consumer<String> onItemClick) {
-        JPanel panel = new JPanel();
+    public static JPanel createNavigationSidebar(int width, mainFrame frame, Consumer<String> onItemClick) {
+        ThemePanel panel = new ThemePanel() {
+            @Override
+            public void updateTheme() {
+                setBackground(LightModeToggle.getSidebarColor());
+            }
+        };
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(DEFAULT_BG);
         panel.setPreferredSize(new Dimension(width, Integer.MAX_VALUE));
         panel.setMaximumSize(new Dimension(width, Integer.MAX_VALUE));
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 1));
+        
 
         addItem(panel, "Owned Games", "📦", onItemClick);
         
         // Add owned games list
-        JPanel ownedGamesPanel = new JPanel();
+        ThemePanel ownedGamesPanel = new ThemePanel() {
+            @Override
+            public void updateTheme() {
+                setBackground(LightModeToggle.getSidebarColor());
+                setForeground(LightModeToggle.getTextColor());
+            }
+        };
         ownedGamesPanel.setLayout(new BoxLayout(ownedGamesPanel, BoxLayout.Y_AXIS));
-        ownedGamesPanel.setBackground(DEFAULT_BG);
         ownedGamesPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0)); // Indent
 
         ArrayList<String> gameTitles = loadGamesFromFile("/library_games.txt");
 
         if (gameTitles.isEmpty()) {
             JLabel noGamesLabel = new JLabel("No games available.");
-            noGamesLabel.setForeground(new Color(0xA0A0A0));
+            noGamesLabel.setForeground(LightModeToggle.getTextColor());
             noGamesLabel.setFont(new Font("Arial", Font.PLAIN, 12));
             ownedGamesPanel.add(noGamesLabel);
         } else {
             for (String title : gameTitles) {
-                addGameItem(ownedGamesPanel, title, onItemClick);
+                addGameItem(ownedGamesPanel, title, frame, onItemClick);
             }
         }
 
@@ -48,32 +59,26 @@ public class sidebarCreator {
     }
     
     private static void addItem(JPanel panel, String text, String icon, Consumer<String> onItemClick) {
-        JButton button = new JButton(text + " " + icon);
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
-        button.setPreferredSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.setMinimumSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.setHorizontalAlignment(JButton.LEFT);
+        ThemeButton button = new ThemeButton(text + " " + icon);
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        button.setContentAreaFilled(false);
-        button.setFocusable(false);
-        button.setFocusPainted(false);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
+        FontManager.fixIcon(button, Integer.MAX_VALUE, 40);
+        button.setHorizontalAlignment(SwingConstants.LEFT);
         
         button.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
-                button.setBackground(HIGHLIGHTED);
+                button.setBackground(LightModeToggle.getComponentColor());
                 button.setOpaque(true);
             }
             
+            @Override
             public void mouseExited(MouseEvent e) {
-                button.setBackground(null);
+                button.setBackground(LightModeToggle.getComponentColor());
                 button.setOpaque(false);
             }
         });
         
-        button.addActionListener(e -> {
+        button.addActionListener(_ -> {
             onItemClick.accept(text.toUpperCase());
         });
         
@@ -81,36 +86,22 @@ public class sidebarCreator {
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
     }
 
-    private static void addGameItem(JPanel panel, String text, Consumer<String> onItemClick) {
-        JButton button = new JButton(text);
-        button.setAlignmentX(Component.LEFT_ALIGNMENT);
-        button.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
-        button.setMinimumSize(new Dimension(Integer.MAX_VALUE, 30));
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-        button.setHorizontalAlignment(JButton.LEFT);
-        button.setBorder(BorderFactory.createEmptyBorder(2, 25, 2, 5)); // Further indent
-        button.setContentAreaFilled(false);
-        button.setFocusable(false);
-        button.setFocusPainted(false);
-        button.setForeground(new Color(0xA0A0A0)); // Lighter color for game items
-        button.setFont(new Font("Arial", Font.PLAIN, 12));
+    private static void addGameItem(JPanel panel, String text, mainFrame frame, @SuppressWarnings("unused") Consumer<String> onItemClick) {
+        ThemeButton button = new ThemeButton(text, false, true, LightModeToggle.getTextColor());
+        FontManager.fixIcon(button, Integer.MAX_VALUE, 40);
+        button.setHorizontalAlignment(SwingConstants.LEFT); // Size messed up lol, I'll figure it out in prefinals
         
         button.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
-                button.setForeground(Color.WHITE);
-            }
-            
+                button.setForeground(LightModeToggle.getAccentColor());
+            } @Override
             public void mouseExited(MouseEvent e) {
-                button.setForeground(new Color(0xA0A0A0));
+                button.setForeground(LightModeToggle.getTextColor());
             }
         });
         
-        button.addActionListener(e -> {
-            onItemClick.accept("LIBRARY"); // Always go to library for game clicks
-            // In a more advanced setup, you might pass the game name to highlight it
-            JOptionPane.showMessageDialog(null, "Launching " + text + "...");
-        });
-        
+        button.addActionListener(_ -> frame.showGameDetail(text));
         panel.add(button);
     }
 
