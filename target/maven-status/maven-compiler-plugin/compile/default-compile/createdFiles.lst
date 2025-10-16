@@ -7,6 +7,7 @@ com\mycompany\nocapgameslauncher\gui\components\GameCardCreator.class
 com\mycompany\nocapgameslauncher\gui\components\sidebarCreator$2.class
 com\mycompany\nocapgameslauncher\gui\resourceManager\resourceLoader.class
 com\mycompany\nocapgameslauncher\gui\utilities\FontManager.class
+com\mycompany\nocapgameslauncher\gui\utilities\AuthManager.class
 com\mycompany\nocapgameslauncher\gui\panels\Profile$1.class
 com\mycompany\nocapgameslauncher\gui\components\HeaderCreator$3.class
 com\mycompany\nocapgameslauncher\gui\panels\Search.class
@@ -18,6 +19,7 @@ com\mycompany\nocapgameslauncher\gui\utilities\LightModeToggle.class
 com\mycompany\nocapgameslauncher\gui\components\HeaderCreator$1.class
 com\mycompany\nocapgameslauncher\gui\panels\Friends$1.class
 com\mycompany\nocapgameslauncher\gui\panels\GameDetail.class
+com\mycompany\nocapgameslauncher\gui\panels\LoginForm.class
 com\mycompany\nocapgameslauncher\gui\utilities\ThemeManager$Themeable.class
 com\mycompany\nocapgameslauncher\gui\utilities\ThemePanel.class
 com\mycompany\nocapgameslauncher\gui\components\ButtonCreator.class
