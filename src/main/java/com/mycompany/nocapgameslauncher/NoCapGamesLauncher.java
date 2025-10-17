@@ -1,14 +1,20 @@
 
 package com.mycompany.nocapgameslauncher;
 
-import com.mycompany.nocapgameslauncher.gui.mainFrame;
-import javax.swing.SwingUtilities;
+import com.mycompany.nocapgameslauncher.gui.panels.LoginForm;
+import javax.swing.*;
 
 public class NoCapGamesLauncher {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            mainFrame frame = new mainFrame();
-            frame.setVisible(true);
+            // Show login dialog first - don't create mainFrame yet
+            JFrame loginFrame = new JFrame("No Cap Games - Login");
+            loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            loginFrame.getContentPane().add(new LoginForm(null));
+            loginFrame.setMinimumSize(new java.awt.Dimension(500, 600));
+            loginFrame.pack();
+            loginFrame.setLocationRelativeTo(null);
+            loginFrame.setVisible(true);
         });
     }
 }

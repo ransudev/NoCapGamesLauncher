@@ -5,11 +5,14 @@ import com.mycompany.nocapgameslauncher.gui.components.GameCardCreator;
 import com.mycompany.nocapgameslauncher.gui.resourceManager.resourceLoader;
 import com.mycompany.nocapgameslauncher.gui.utilities.LightModeToggle;
 import com.mycompany.nocapgameslauncher.gui.utilities.ThemePanel;
+import static com.mycompany.nocapgameslauncher.gui.components.GameCardCreator.CARD_WIDTH;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.*;
 
 import com.mycompany.nocapgameslauncher.gui.utilities.*;
@@ -19,6 +22,7 @@ public class Library extends ThemePanel {
     private ThemePanel cardsPanel;
     private ArrayList<JPanel> gameCardsList;
     private JLabel titleLabel;
+    private static final int CARD_GAP = 20;
 
     @SuppressWarnings("OverridableMethodCallInConstructor") // Placeholder suppression for now
     public Library(mainFrame frame) {
@@ -35,7 +39,7 @@ public class Library extends ThemePanel {
             FontManager.setFont(titleLabel, Font.BOLD, 40);
             add(titleLabel, BorderLayout.NORTH);
 
-            cardsPanel = new ThemePanel(new GridLayout(0, 4, 20, 20));
+            cardsPanel = new ThemePanel(new GridLayout(0, 4, CARD_GAP, CARD_GAP));
             cardsPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
             gameCardsList = new ArrayList<>();
@@ -53,7 +57,7 @@ public class Library extends ThemePanel {
                     String title = gameTitles.get(i);
                     String description = (i < gameDescriptions.size()) ? gameDescriptions.get(i) : "No description available.";
                     ImageIcon gameIcon = resourceLoader.loadIcon("ImageResources/default_game_icon.jpg"); 
-                    gameCardsList.add(GameCardCreator.createGameCard(title, description, gameIcon));
+                    gameCardsList.add(GameCardCreator.createGameCard(title, description, gameIcon, () -> frame.showGameDetail(title)));
                 }
             }
 
@@ -61,15 +65,47 @@ public class Library extends ThemePanel {
                 cardsPanel.add(card);
             }
 
-            ThemePanel cardsWrapper = new ThemePanel(new FlowLayout(FlowLayout.LEFT));
-            cardsWrapper.add(cardsPanel);
+            JScrollPane scrollPane = new JScrollPane(cardsPanel);
+            scrollPane.setBorder(null);
+            scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-            add(cardsWrapper, BorderLayout.CENTER);
+            add(scrollPane, BorderLayout.CENTER);
+            
+            // Add component listener to dynamically adjust columns
+            addComponentListener(new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    updateGridColumns();
+                }
+            });
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
                 "Failed to build content: " + e.getClass().getSimpleName() + " - " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void updateGridColumns() {
+        if (cardsPanel == null || gameCardsList.isEmpty()) {
+            return;
+        }
+        
+        int availableWidth = getWidth() - 40; // Subtract left and right padding
+        if (availableWidth <= 0) {
+            return;
+        }
+        
+        // Calculate optimal number of columns based on available width
+        int columns = Math.max(1, availableWidth / (CARD_WIDTH + CARD_GAP));
+        
+        // Update the grid layout if columns changed
+        GridLayout layout = (GridLayout) cardsPanel.getLayout();
+        if (layout.getColumns() != columns) {
+            cardsPanel.setLayout(new GridLayout(0, columns, CARD_GAP, CARD_GAP));
+            cardsPanel.revalidate();
+            cardsPanel.repaint();
         }
     }
 

@@ -74,6 +74,32 @@ public class HeaderCreator {
         searchBar.setPreferredSize(new Dimension(400, 30));
         searchBar.setToolTipText("Search games...");
         searchBar.putClientProperty("JComponent.roundedCorners", true);
+        
+        // Add focus listener to clear placeholder text
+        searchBar.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (searchBar.getText().equals("Search games...")) {
+                    searchBar.setText("");
+                }
+            }
+            
+            @Override
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                if (searchBar.getText().isEmpty()) {
+                    searchBar.setText("Search games...");
+                }
+            }
+        });
+        
+        // Add action listener for Enter key
+        searchBar.addActionListener(_ -> {
+            String query = searchBar.getText().trim();
+            if (!query.isEmpty() && !query.equals("Search games...")) {
+                frame.performSearch(query);
+            }
+        });
+        
         ThemePanel searchPanel = new ThemePanel(new GridBagLayout());
         searchPanel.setOpaque(false);
         searchPanel.add(searchBar);

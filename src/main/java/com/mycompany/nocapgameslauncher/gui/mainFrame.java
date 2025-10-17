@@ -11,7 +11,9 @@ public class mainFrame extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private JPanel sidebarPanel;
-    private GameDetail gameDetailPanel; // New field
+    private GameDetail gameDetailPanel;
+    private Search searchPanel;
+    private String currentPanel = "LIBRARY";
 
     public mainFrame() {
         initializeFrame();
@@ -34,12 +36,14 @@ public class mainFrame extends JFrame {
         mainPanel = new JPanel(cardLayout);
         
         // Create and add panels
-        gameDetailPanel = new GameDetail(this); // Initialize here
+        gameDetailPanel = new GameDetail(this);
+        searchPanel = new Search(this);
         mainPanel.add(new Library(this), "LIBRARY");
         mainPanel.add(new Store(this), "STORE");
         mainPanel.add(new Friends(this), "FRIENDS");
         mainPanel.add(new Profile(this), "PROFILE");
         mainPanel.add(gameDetailPanel, "GAME_DETAIL");
+        mainPanel.add(searchPanel, "SEARCH");
 
         getContentPane().add(HeaderCreator.createHeader(this, sidebarPanel), BorderLayout.NORTH);
         getContentPane().add(sidebarPanel, BorderLayout.WEST);
@@ -49,11 +53,25 @@ public class mainFrame extends JFrame {
     }
 
     public void showCard(String cardName) {
+        currentPanel = cardName;
         cardLayout.show(mainPanel, cardName);
     }
 
     public void showGameDetail(String gameTitle) {
         gameDetailPanel.setGame(gameTitle);
         cardLayout.show(mainPanel, "GAME_DETAIL");
+    }
+    
+    public void performSearch(String query) {
+        // Determine search scope based on current panel
+        String searchScope = "ALL";
+        if (currentPanel.equals("LIBRARY")) {
+            searchScope = "LIBRARY";
+        } else if (currentPanel.equals("STORE")) {
+            searchScope = "STORE";
+        }
+        
+        searchPanel.performSearch(query, searchScope);
+        cardLayout.show(mainPanel, "SEARCH");
     }
 }

@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>24</maven.compiler.release>
+        <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>com.mycompany.nocapgameslauncher.NoCapGamesLauncher</exec.mainClass>
     </properties>
     <build>
@@ -39,4 +39,12 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <!-- MySQL Connector/J for JDBC access -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.1.0</version>
+        </dependency>
+    </dependencies>
 </project>
